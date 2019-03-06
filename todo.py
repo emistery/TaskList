@@ -1,5 +1,5 @@
 #Emiel Kok © 2019
-#gist at https://gist.github.com/emistery/dc9274936a187bad7a366373488af0db
+#https://github.com/emistery/TaskList for newest version
 import datetime
 from peewee import *
 from tkinter import *
