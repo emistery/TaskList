@@ -119,9 +119,7 @@ class Window(Frame):
         #self.start.grid(row=2, column=2, sticky=E)
 
     def resize_window(self):
-        self.state = not self.state  # Just toggling the boolean
-        self.tk.attributes("-fullscreen", self.state)
-        return "break"
+        root.attributes("-fullscreen", False)
 
     def force_refesh(self):
         self.destroy()
