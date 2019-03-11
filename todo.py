@@ -110,7 +110,7 @@ class Window(Frame):
     def show_buttons(self):
         #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
         Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
-        Button(self, text="Sluiten", command=self.close_window).grid(row=1, column=2, sticky=E)
+        Button(self, text="Groter/Kleiner", command=self.resize_window).grid(row=1, column=2, sticky=E)
         self.start_server()
         #self.start["text"] = "Startserver"
         #self.start["fg"] = "green"
@@ -118,8 +118,10 @@ class Window(Frame):
 
         #self.start.grid(row=2, column=2, sticky=E)
 
-    def close_window(self):
-        self.destroy()
+    def resize_window(self):
+        self.state = not self.state  # Just toggling the boolean
+        self.tk.attributes("-fullscreen", self.state)
+        return "break"
 
     def force_refesh(self):
         self.destroy()
