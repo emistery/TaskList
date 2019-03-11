@@ -80,7 +80,7 @@ class Window(Frame):
         self.init_window()
         self.show_items()
         self.show_buttons()
-        self.create_test()
+        #self.create_test()
 
     def init_window(self):
         # changing the title of our master widget
@@ -108,13 +108,18 @@ class Window(Frame):
             i = i + 1
 
     def show_buttons(self):
-        Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
-        Button(self, text="Force refresh", command=self.force_refesh).grid(row=3, column=2, sticky=E)
-        self.start["text"] = "Startserver"
-        self.start["fg"] = "green"
-        self.start["command"] = self.start_server
+        #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
+        Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
+        Button(self, text="Sluiten", command=self.close_window).grid(row=1, column=2, sticky=E)
+        self.start_server()
+        #self.start["text"] = "Startserver"
+        #self.start["fg"] = "green"
+        #self.start["command"] = self.start_server
 
-        self.start.grid(row=2, column=2, sticky=E)
+        #self.start.grid(row=2, column=2, sticky=E)
+
+    def close_window(root):
+        root.destroy()
 
     def force_refesh(self):
         self.destroy()
