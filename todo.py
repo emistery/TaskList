@@ -118,8 +118,8 @@ class Window(Frame):
 
         #self.start.grid(row=2, column=2, sticky=E)
 
-    def close_window(root):
-        root.destroy()
+    def close_window(self):
+        self.destroy()
 
     def force_refesh(self):
         self.destroy()
