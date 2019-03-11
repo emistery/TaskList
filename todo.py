@@ -186,6 +186,7 @@ PORT = 8080
 httpd = HTTPServer(('192.168.0.2', PORT), SimpleHTTPRequestHandler)
 root = Tk()
 root.geometry("480x320")
+root.overrideredirect(1) #Remove border
 
 
 def create_app():
