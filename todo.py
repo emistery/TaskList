@@ -1,4 +1,4 @@
-#Emiel Kok © 2019
+#Emiel Kok 2019
 #https://github.com/emistery/TaskList for newest version
 import datetime
 from peewee import *
@@ -8,7 +8,8 @@ import _thread as thread
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import cgi
 
-db = SqliteDatabase('tasklist.db')
+#change to own folder
+db = SqliteDatabase('/home/pi/TaskList/tasklist.db')
 
 labeldict = {}
 buttondict = {}
@@ -180,7 +181,9 @@ for task in Task.select():
 PORT = 8080
 # Handler = httpserver.SimpleHTTPRequestHandler
 # httpd = socketserver.TCPServer(("", PORT), Handler)
-httpd = HTTPServer(('localhost', PORT), SimpleHTTPRequestHandler)
+
+#change to own IP address
+httpd = HTTPServer(('192.168.0.2', PORT), SimpleHTTPRequestHandler)
 root = Tk()
 root.geometry("480x320")
 
