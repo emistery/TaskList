@@ -110,7 +110,7 @@ class Window(Frame):
     def show_buttons(self):
         #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
         Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
-        Button(self, text="Groter/Kleiner", command=self.resize_window).grid(row=1, column=2, sticky=E)
+        Button(self, text="Resize", command=self.resize_window).grid(row=1, column=2, sticky=E)
         self.start_server()
         #self.start["text"] = "Startserver"
         #self.start["fg"] = "green"
@@ -119,7 +119,10 @@ class Window(Frame):
         #self.start.grid(row=2, column=2, sticky=E)
 
     def resize_window(self):
-        root.attributes("-fullscreen", False)
+        if root.attributes("-fullscreen"):
+            root.attributes("-fullscreen", False)
+        else:
+            root.attributes("-fullscreen", True)
 
     def force_refesh(self):
         self.destroy()
@@ -191,7 +194,8 @@ PORT = 8080
 httpd = HTTPServer(('192.168.0.2', PORT), SimpleHTTPRequestHandler)
 root = Tk()
 root.geometry("480x320")
-root.overrideredirect(1) #Remove border
+#root.overrideredirect(1) #Remove border
+root.attributes("-fullscreen", True)
 
 
 def create_app():
