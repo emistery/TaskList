@@ -16,7 +16,7 @@ from tkinter import simpledialog
 config = configparser.ConfigParser()
 config.read("settings.ini")
 #file_path = filedialog.askdirectory()
-db = SqliteDatabase(config.get('DEFAULT', 'database'))
+db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
 
 labeldict = {}
 buttondict = {}
