@@ -16,10 +16,9 @@ from tkinter import simpledialog
 config = configparser.ConfigParser()
 config.read("settings.ini")
 #file_path = filedialog.askdirectory()
-try:
-    db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
-except:
-    db = SqliteDatabase("./tasklist.db")
+
+db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
+
 
 labeldict = {}
 buttondict = {}
