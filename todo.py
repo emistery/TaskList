@@ -7,9 +7,16 @@ from functools import partial
 import _thread as thread
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import cgi
+from tkinter import filedialog
+import configparser
+from tkinter import simpledialog
 
 #change to own folder
-db = SqliteDatabase('/home/pi/TaskList/tasklist.db')
+
+config = configparser.ConfigParser()
+config.read("settings.ini")
+#file_path = filedialog.askdirectory()
+db = SqliteDatabase(config.get('DEFAULT', 'database'))
 
 labeldict = {}
 buttondict = {}
@@ -111,6 +118,8 @@ class Window(Frame):
         #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
         Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
         Button(self, text="Resize", command=self.resize_window).grid(row=1, column=2, sticky=E)
+        Button(self, text="Choose DB", command=self.change_db).grid(row=2, column=2, sticky=E)
+        Button(self, text="Choose IP", command=self.change_ip).grid(row=3, column=2, sticky=E)
         self.start_server()
         #self.start["text"] = "Startserver"
         #self.start["fg"] = "green"
@@ -118,6 +127,23 @@ class Window(Frame):
 
         #self.start.grid(row=2, column=2, sticky=E)
 
+    def change_db(self):
+        file_path = filedialog.askdirectory()
+        file_path = file_path + "/tasklist.db"
+        #print(file_path)
+        config.set('DEFAULT', 'database', str(file_path))
+
+        print(config.get('DEFAULT', 'database'))
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
+
+    def change_ip(self):
+        newip = simpledialog.askstring("input string", "choose IP Address")
+        config.set('DEFAULT', 'ipaddress', str(newip))
+        print(config.get('DEFAULT', 'ipaddress'))
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
+            
     def resize_window(self):
         if root.attributes("-fullscreen"):
             root.attributes("-fullscreen", False)
@@ -191,7 +217,11 @@ PORT = 8080
 # httpd = socketserver.TCPServer(("", PORT), Handler)
 
 #change to own IP address
-httpd = HTTPServer(('192.168.0.2', PORT), SimpleHTTPRequestHandler)
+#print(config.get('DEFAULT', 'database'))
+
+ip_address = config.get("DEFAULT", "ipaddress")
+
+httpd = HTTPServer((ip_address, PORT), SimpleHTTPRequestHandler)
 root = Tk()
 root.geometry("480x320")
 #root.overrideredirect(1) #Remove border
