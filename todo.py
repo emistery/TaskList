@@ -19,7 +19,7 @@ config.read("settings.ini")
 try:
     db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
 except:
-    db = "./tasklist.db"
+    db = SqliteDatabase("./tasklist.db")
 
 labeldict = {}
 buttondict = {}
