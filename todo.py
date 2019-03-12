@@ -10,11 +10,16 @@ import cgi
 from tkinter import filedialog
 import configparser
 from tkinter import simpledialog
-
+import os
 #change to own folder
 
 config = configparser.ConfigParser()
-config.read("settings.ini")
+
+if os.name == 'nt':
+    config.read("settings.ini")
+else:
+    config.read("/settings.ini")
+
 #file_path = filedialog.askdirectory()
 try:
     db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
