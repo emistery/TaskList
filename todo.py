@@ -1,17 +1,26 @@
 #Emiel Kok 2019
 #https://github.com/emistery/TaskList for newest version
 import datetime
-from peewee import *
-from tkinter import *
-from functools import partial
-import _thread as thread
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import cgi
-from tkinter import filedialog
-import configparser
-from tkinter import simpledialog
 import os
-#change to own folder
+from tkinter import *
+from tkinter import simpledialog
+#import tkinter
+import configparser
+import cgi
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from functools import partial
+from peewee import SqliteDatabase, Model, CharField, DateTimeField, BooleanField
+
+
+import _thread as thread
+
+
+from tkinter import filedialog
+
+
+
+
+#if linux, change to own folder
 
 config = configparser.ConfigParser()
 
@@ -22,9 +31,7 @@ else:
 
 config.read(configFilePath)
 
-#file_path = filedialog.askdirectory()
-
-
+#if linux, change to own folder
 if os.name == 'nt':
     db = SqliteDatabase('tasklist.db')
 else:
@@ -49,7 +56,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/html')
                 self.end_headers()
-
                 output = ""
                 output += '<html><body>Hello!'
                 output += '<form method="POST" enctype="multipart/form-data" action="/hello"><h2> Wat wil je toevoegen?</h2><input name="message" type="text" /><input type="submit" value="Submit" /></form>'
@@ -132,7 +138,7 @@ class Window(Frame):
 
     def show_buttons(self):
         #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
-        Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
+        Button(self, text="Refresh", command=self.force_refresh).grid(row=0, column=2, sticky=E)
         Button(self, text="Resize", command=self.resize_window).grid(row=1, column=2, sticky=E)
         Button(self, text="Choose IP", command=self.change_ip).grid(row=2, column=2, sticky=E)
         self.start_server()
@@ -141,16 +147,6 @@ class Window(Frame):
         #self.start["command"] = self.start_server
 
         #self.start.grid(row=2, column=2, sticky=E)
-
-    def change_db(self):
-        file_path = filedialog.askdirectory()
-        file_path = file_path + "/tasklist.db"
-        #print(file_path)
-        config.set('serversettings', 'database', str(file_path))
-
-        print(config.get('serversettings', 'database'))
-        with open('settings.ini', 'w') as configfile:
-            config.write(configfile)
 
     def change_ip(self):
         newip = simpledialog.askstring("input string", "choose IP Address")
@@ -165,9 +161,10 @@ class Window(Frame):
         else:
             root.attributes("-fullscreen", True)
 
-    def force_refesh(self):
+    def force_refresh(self):
         self.destroy()
         create_app()
+
 
     def delete_item(self, number):
         try:
