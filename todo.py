@@ -19,7 +19,7 @@ if os.name == 'nt':
 
     configFilePath = 'settings.ini'
 else:
-    configFilePath = r'/settings.ini'
+    configFilePath = '\settings.ini'
 
 config.read(configFilePath)
 
