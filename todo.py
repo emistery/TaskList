@@ -16,9 +16,12 @@ import os
 config = configparser.ConfigParser()
 
 if os.name == 'nt':
-    config.read("settings.ini")
+
+    configFilePath = 'settings.ini'
 else:
-    config.read(r"/settings.ini")
+    configFilePath = r'/settings.ini'
+
+config.read(configFilePath)
 
 #file_path = filedialog.askdirectory()
 try:
