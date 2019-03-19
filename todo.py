@@ -156,7 +156,7 @@ class Window(Frame):
         newip = simpledialog.askstring("input string", "choose IP Address")
         config.set('serversettings', 'ipaddress', str(newip))
         print(config.get('serversettings', 'ipaddress'))
-        with open('settings.ini', 'w') as configfile:
+        with open(configFilePath, 'w') as configfile:
             config.write(configfile)
             
     def resize_window(self):
