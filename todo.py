@@ -22,7 +22,7 @@ else:
 
 #file_path = filedialog.askdirectory()
 try:
-    db = SqliteDatabase(str(config.get('DEFAULT', 'database')))
+    db = SqliteDatabase(str(config.get('serversettings', 'database')))
 except:
     db = SqliteDatabase("TaskList/tasklist.db")
 
@@ -139,16 +139,16 @@ class Window(Frame):
         file_path = filedialog.askdirectory()
         file_path = file_path + "/tasklist.db"
         #print(file_path)
-        config.set('DEFAULT', 'database', str(file_path))
+        config.set('serversettings', 'database', str(file_path))
 
-        print(config.get('DEFAULT', 'database'))
+        print(config.get('serversettings', 'database'))
         with open('settings.ini', 'w') as configfile:
             config.write(configfile)
 
     def change_ip(self):
         newip = simpledialog.askstring("input string", "choose IP Address")
-        config.set('DEFAULT', 'ipaddress', str(newip))
-        print(config.get('DEFAULT', 'ipaddress'))
+        config.set('serversettings', 'ipaddress', str(newip))
+        print(config.get('serversettings', 'ipaddress'))
         with open('settings.ini', 'w') as configfile:
             config.write(configfile)
             
@@ -227,7 +227,7 @@ PORT = 8080
 #change to own IP address
 #print(config.get('DEFAULT', 'database'))
 
-ip_address = config.get("DEFAULT", "ipaddress")
+ip_address = config.get("serversettings", "ipaddress")
 
 httpd = HTTPServer((ip_address, PORT), SimpleHTTPRequestHandler)
 root = Tk()
