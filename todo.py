@@ -16,18 +16,20 @@ import os
 config = configparser.ConfigParser()
 
 if os.name == 'nt':
-
     configFilePath = 'settings.ini'
 else:
-    configFilePath = '\settings.ini'
+    configFilePath = '/home/pi/TaskList/settings.ini'
 
 config.read(configFilePath)
 
 #file_path = filedialog.askdirectory()
-try:
-    db = SqliteDatabase(str(config.get('serversettings', 'database')))
-except:
-    db = SqliteDatabase("TaskList/tasklist.db")
+
+
+if os.name == 'nt':
+    db = SqliteDatabase('tasklist.db')
+else:
+    db = SqliteDatabase('/home/pi/TaskList/tasklist.db')
+
 
 labeldict = {}
 buttondict = {}
@@ -113,7 +115,10 @@ class Window(Frame):
 
     def show_items(self):
         i = 0
-        photo = PhotoImage(file="trash.png")
+        if os.name == 'nt':
+            photo = PhotoImage(file="trash.png")
+        else:
+            photo = PhotoImage(file="/home/pi/TaskList/trash.png")
         for task in Task.select():
             labeldict["nummer" + str(i)] = Label(self, text=str(task.task), highlightbackground="black", bd=1,
                                                  relief=GROOVE, width=40)
@@ -129,8 +134,7 @@ class Window(Frame):
         #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
         Button(self, text="Refresh", command=self.force_refesh).grid(row=0, column=2, sticky=E)
         Button(self, text="Resize", command=self.resize_window).grid(row=1, column=2, sticky=E)
-        Button(self, text="Choose DB", command=self.change_db).grid(row=2, column=2, sticky=E)
-        Button(self, text="Choose IP", command=self.change_ip).grid(row=3, column=2, sticky=E)
+        Button(self, text="Choose IP", command=self.change_ip).grid(row=2, column=2, sticky=E)
         self.start_server()
         #self.start["text"] = "Startserver"
         #self.start["fg"] = "green"
