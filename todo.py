@@ -8,7 +8,7 @@ from functools import partial
 from peewee import SqliteDatabase, Model, CharField, DateTimeField, BooleanField
 import _thread as thread
 
-
+config = configparser.ConfigParser()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = 3125
 ip_address = config.get("serversettings", "ipaddress")
@@ -17,7 +17,7 @@ print ('Socket binded to port 3125')
 s.listen(3)
 print ('socket is listening')
 
-config = configparser.ConfigParser()
+
 
 if os.name == 'nt':
     configFilePath = 'settings.ini'
