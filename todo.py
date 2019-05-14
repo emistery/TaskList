@@ -9,6 +9,13 @@ from peewee import SqliteDatabase, Model, CharField, DateTimeField, BooleanField
 import _thread as thread
 
 config = configparser.ConfigParser()
+
+if os.name == 'nt':
+    configFilePath = 'settings.ini'
+else:
+    configFilePath = '/home/pi/TaskList/settings.ini'
+
+config.read(configFilePath)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = 3125
 ip_address = config.get("serversettings", "ipaddress")
@@ -19,12 +26,7 @@ print ('socket is listening')
 
 
 
-if os.name == 'nt':
-    configFilePath = 'settings.ini'
-else:
-    configFilePath = '/home/pi/TaskList/settings.ini'
 
-config.read(configFilePath)
 
 # if linux, change to own folder
 if os.name == 'nt':
