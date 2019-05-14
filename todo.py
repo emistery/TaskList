@@ -11,7 +11,8 @@ import _thread as thread
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = 3125
-s.bind(('localhost', port))
+ip_address = config.get("serversettings", "ipaddress")
+s.bind((ip_address, port))
 print ('Socket binded to port 3125')
 s.listen(3)
 print ('socket is listening')
@@ -178,7 +179,7 @@ for task in Task.select():
 # change to own IP address
 # print(config.get('DEFAULT', 'database'))
 
-ip_address = config.get("serversettings", "ipaddress")
+
 root = Tk()
 root.geometry("480x320")
 # root.overrideredirect(1) #Remove border
