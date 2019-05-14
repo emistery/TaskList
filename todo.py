@@ -1,26 +1,20 @@
-#Emiel Kok 2019
-#https://github.com/emistery/TaskList for newest version
+import socket
 import datetime
 import os
 from tkinter import *
 from tkinter import simpledialog
-#import tkinter
 import configparser
-import cgi
-from http.server import HTTPServer, BaseHTTPRequestHandler
 from functools import partial
 from peewee import SqliteDatabase, Model, CharField, DateTimeField, BooleanField
-
-
 import _thread as thread
 
 
-from tkinter import filedialog
-
-
-
-
-#if linux, change to own folder
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+port = 3125
+s.bind(('localhost', port))
+print ('Socket binded to port 3125')
+s.listen(3)
+print ('socket is listening')
 
 config = configparser.ConfigParser()
 
@@ -31,12 +25,11 @@ else:
 
 config.read(configFilePath)
 
-#if linux, change to own folder
+# if linux, change to own folder
 if os.name == 'nt':
     db = SqliteDatabase('tasklist.db')
 else:
     db = SqliteDatabase('/home/pi/TaskList/tasklist.db')
-
 
 labeldict = {}
 buttondict = {}
@@ -45,52 +38,13 @@ buttondict = {}
 def st_server():
     """Start server"""
     while True:
-        httpd.handle_request()
-
-
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
-    def do_GET(self):
-        try:
-            if self.path.endswith("/hello"):
-                self.send_response(200)
-                self.send_header('Content-Type', 'text/html')
-                self.end_headers()
-                output = ""
-                output += '<html><body>Hello!'
-                output += '<form method="POST" enctype="multipart/form-data" action="/hello"><h2> Wat wil je toevoegen?</h2><input name="message" type="text" /><input type="submit" value="Submit" /></form>'
-                output += '</body></html>'
-                self.wfile.write(output.encode())
-                print(output)
-                return
-
-        except IOError:
-            self.send_error(404, "File not found %s" % self.path)
-
-    def do_POST(self):
-        try:
-            self.send_response(301)
-            self.send_header('Content-Type', 'text/html')
-            self.end_headers()
-            ctype, pdict = cgi.parse_header(self.headers.get('Content-Type'))
-            pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
-            if ctype == 'multipart/form-data':
-                fields = cgi.parse_multipart(self.rfile, pdict)
-                messagecontent = fields.get('message')
-            output = ''
-            output += '<html><body>'
-            output += '<h2> Dit heb je toegevoegd: </h2>'
-            output += '<h1> %s </h1>' % messagecontent[0].decode("utf-8")
-            print(messagecontent[0].decode("utf-8"))
-            insert_task(messagecontent[0].decode("utf-8"))
-            output += '<form method="POST" enctype="multipart/form-data" action="/hello"><h2> Wat wil je toevoegen?</h2><input name="message" type="text" /><input type="submit" value="Submit" /></form>'
-            output += '</body></html>'
-            self.wfile.write(output.encode())
-            print(output)
-        except:
-            self.send_error(404, "{}".format(sys.exc_info()[0]))
-            print(sys.exc_info())
-
+        c, addr = s.accept()
+        print('Got connection from ', addr)
+        #print(c.recv(1024))
+        newtask = c.recv(1024)
+        print(newtask)
+        insert_task(newtask)
+        s.close
 
 def insert_task(taskname):
     newtask = Task(task=taskname)
@@ -101,12 +55,11 @@ class Window(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.start = Button(self)
         self.master = master
         self.init_window()
         self.show_items()
         self.show_buttons()
-        #self.create_test()
+        # self.create_test()
 
     def init_window(self):
         # changing the title of our master widget
@@ -117,7 +70,6 @@ class Window(Frame):
 
     def start_server(self):
         thread.start_new_thread(st_server, ())
-        self.start.config(state='disabled')
 
     def show_items(self):
         i = 0
@@ -137,24 +89,29 @@ class Window(Frame):
             i = i + 1
 
     def show_buttons(self):
-        #Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
+        # Button(self, text="Refresh", command=self.show_items).grid(row=0, column=2, sticky=E)
         Button(self, text="Refresh", command=self.force_refresh).grid(row=0, column=2, sticky=E)
         Button(self, text="Resize", command=self.resize_window).grid(row=1, column=2, sticky=E)
         Button(self, text="Choose IP", command=self.change_ip).grid(row=2, column=2, sticky=E)
         self.start_server()
-        #self.start["text"] = "Startserver"
-        #self.start["fg"] = "green"
-        #self.start["command"] = self.start_server
+        # self.start["text"] = "Startserver"
+        # self.start["fg"] = "green"
+        # self.start["command"] = self.start_server
 
-        #self.start.grid(row=2, column=2, sticky=E)
+        # self.start.grid(row=2, column=2, sticky=E)
 
     def change_ip(self):
         newip = simpledialog.askstring("input string", "choose IP Address")
-        config.set('serversettings', 'ipaddress', str(newip))
-        print(config.get('serversettings', 'ipaddress'))
-        with open(configFilePath, 'w') as configfile:
-            config.write(configfile)
-            
+        if newip is None:
+            config.set('serversettings', 'ipaddress', str("127.0.0.1"))
+            with open(configFilePath, 'w') as configfile:
+                config.write(configfile)
+        else:
+            config.set('serversettings', 'ipaddress', str(newip))
+            print(config.get('serversettings', 'ipaddress'))
+            with open(configFilePath, 'w') as configfile:
+                config.write(configfile)
+
     def resize_window(self):
         if root.attributes("-fullscreen"):
             root.attributes("-fullscreen", False)
@@ -164,7 +121,6 @@ class Window(Frame):
     def force_refresh(self):
         self.destroy()
         create_app()
-
 
     def delete_item(self, number):
         try:
@@ -182,6 +138,7 @@ class Window(Frame):
 
     def create_test(self):
         Button(self, text="create new", command=create_new).grid(row=1, column=2, sticky=E)
+
 
 def create_new():
     newtask1 = Task(task="eten")
@@ -217,26 +174,14 @@ db.create_tables([Task], safe=True)
 for task in Task.select():
     print(task.task)
 
-# newtask = Task(task="eten")
-# newtask.save()
 
-# uncle_bob = Person(name='Bob', birthday=date(1960, 1, 15))
-# uncle_bob.save() # bob is now stored in the database
-
-
-PORT = 8080
-# Handler = httpserver.SimpleHTTPRequestHandler
-# httpd = socketserver.TCPServer(("", PORT), Handler)
-
-#change to own IP address
-#print(config.get('DEFAULT', 'database'))
+# change to own IP address
+# print(config.get('DEFAULT', 'database'))
 
 ip_address = config.get("serversettings", "ipaddress")
-
-httpd = HTTPServer((ip_address, PORT), SimpleHTTPRequestHandler)
 root = Tk()
 root.geometry("480x320")
-#root.overrideredirect(1) #Remove border
+# root.overrideredirect(1) #Remove border
 root.attributes("-fullscreen", True)
 
 
