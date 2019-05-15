@@ -45,13 +45,19 @@ def st_server():
         print('Got connection from ', addr)
         #print(c.recv(1024))
         rc_message(c)
-        #s.close
+        #s.shutdown(socket.SHUT_WR)
 
 def rc_message(c):
-    while True:
+    i = True
+    while i == True:
         newtask = c.recv(1024)
         print(newtask)
+        if newtask == b'':
+            i = False
+            break
+        #print(newtask)
         insert_task(newtask)
+
 
 
 def insert_task(taskname):
