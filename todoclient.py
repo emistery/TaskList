@@ -11,7 +11,10 @@ class ClientGui:
         master.title("Client GUI")
 
         self.connect_button = Button(master, text="Connect", command=self.connect)
-        self.connect_button.pack()
+        self.connect_button.grid(row=0, column=1)
+
+        #e1.grid(row=0, column=1)
+        #e2.grid(row=1, column=1)
 
         self.send_button = Button(master, text="Send", command=self.send)
 
@@ -22,8 +25,8 @@ class ClientGui:
         port = 3125
         ip_address = simpledialog.askstring("input string", "Choose IP")
         self.s.connect((ip_address, port))
-        #self.connect_button.destroy()
-        self.send_button.pack()
+        self.connect_button.destroy()
+        self.send_button.grid(row=0, column=0)
 
     def send(self):
         z = simpledialog.askstring("input string", "What do you want to do?")
@@ -32,9 +35,12 @@ class ClientGui:
         #self.s.shutdown(socket.SHUT_WR)
 
     def on_closing(self):
-        if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            self.s.shutdown(socket.SHUT_WR)
-            self.s.close()
+        try:
+            if messagebox.askokcancel("Quit", "Do you want to quit?"):
+                self.s.shutdown(socket.SHUT_WR)
+                self.s.close()
+                root.destroy()
+        except OSError:
             root.destroy()
 
 
