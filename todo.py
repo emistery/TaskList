@@ -44,10 +44,15 @@ def st_server():
         c, addr = s.accept()
         print('Got connection from ', addr)
         #print(c.recv(1024))
+        rc_message(c)
+        #s.close
+
+def rc_message(c):
+    while True:
         newtask = c.recv(1024)
         print(newtask)
         insert_task(newtask)
-        s.close
+
 
 def insert_task(taskname):
     newtask = Task(task=taskname)

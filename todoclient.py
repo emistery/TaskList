@@ -6,19 +6,13 @@ from tkinter import simpledialog
 class ClientGui:
     def __init__(self, master):
         self.master = master
-        master.title("A simple GUI")
+        master.title("Client GUI")
 
-        self.label = Label(master, text="This is our first GUI!")
-        self.label.pack()
+        self.connect_button = Button(master, text="Connect", command=self.connect)
+        self.connect_button.pack()
 
-        self.greet_button = Button(master, text="Connect", command=self.connect)
-        self.greet_button.pack()
-
-        self.greet_button = Button(master, text="Send", command=self.send)
-        self.greet_button.pack()
-
-        self.close_button = Button(master, text="Close", command=master.quit)
-        self.close_button.pack()
+        self.send_button = Button(master, text="Send", command=self.send)
+        self.send_button.pack()
 
         self.s = socket.socket()
 
@@ -27,14 +21,18 @@ class ClientGui:
         port = 3125
         ip_address = simpledialog.askstring("input string", "Choose IP")
         self.s.connect((ip_address, port))
+        #self.connect_button.destroy()
 
 
     def send(self):
         z = simpledialog.askstring("input string", "What do you want to do?")
         self.s.sendall(z.encode())
-        self.s.close()
+        #self.s.close()
+        #self.s.shutdown(socket.SHUT_WR)
+
 
 root = Tk()
+root.geometry("480x320")
 my_gui = ClientGui(root)
 root.mainloop()
 
